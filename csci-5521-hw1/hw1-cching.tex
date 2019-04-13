@@ -1,0 +1,524 @@
+\documentclass{article}
+
+\usepackage[margin=0.5in]{geometry}
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\newcommand{\mysum} {\sum\limits_{t = 1}^N}
+
+\begin{document}
+
+\section{Problem 1}
+
+\subsection{(i)}
+
+If we let $SSE = \frac{1}{N} \sum\limits_{t = 1}^N (r^t - (w_1x^t + w_0))^2$, then we want to minimize the SSE by setting the derivative with respect to $w_0$ and $w_1$ to zero:
+
+% equation 1
+\begin{equation}
+\frac {\partial SSE}{\partial w_0} = \frac{1}{N} \sum\limits_{t = 1}^N 2(r^t - w_1 x^t - w_0)(-1) = 0
+\end{equation}
+
+We can get rid of the $\frac{2}{N}$ by multiplying each side by $\frac{N}{2}$ and carry the summations through to arrive at:
+
+% equation 2
+\begin{equation}
+\sum\limits_{t = 1}^N w_0 + \sum\limits_{t = 1}^N w_1 x^t = \sum\limits_{t = 1}^N r^t
+\end{equation}
+
+% equation 3
+\begin{equation}
+N w_0 + w_1 \sum\limits_{t = 1}^N x^t = \sum\limits_{t = 1}^N r^t
+\end{equation}
+
+and similarly for $w_1$:
+
+% equation 4
+\begin{equation}
+\frac {\partial SSE}{\partial w_1} = \frac{1}{N} \sum\limits_{t = 1}^N 2(r^t - w_1 x^t - w_0)(-x^t) = 0
+\end{equation}
+
+we can get rid of $\frac{2}{N}$ by multiplying each side by $\frac{N}{2}$ and carry the summations through to arrive at:
+
+% equation 5
+\begin{equation}
+w_0 \sum\limits_{t = 1}^N x^t + w_1 \sum\limits_{t = 1}^N (x^t)^2 = \sum\limits_{t = 1}^N x^t r^t
+\end{equation}
+
+Now divide both sides of (3) by N:
+
+% equation 6
+\begin{equation}
+w_0 + w_1 \bar{x^t} = \bar{r^t}
+\end{equation}
+
+We'll use (3) and (5) to solve a system of equations.  Multiply (3) by $\sum\limits_{t = 1}^N x^t$ and multiply (5) by $N$
+
+% equation 7
+\begin{equation}
+N w_0 \sum\limits_{t = 1}^N x^t + w_1 (\sum\limits_{t = 1}^N x^t)^2 = \sum\limits_{t = 1}^N x^t \sum\limits_{t = 1}^N r^t
+\end{equation}
+
+% equation 8
+\begin{equation}
+N w_0 \sum\limits_{t = 1}^N x^t + N w_1 \sum\limits_{t = 1}^N (x^t)^2 = N \sum\limits_{t = 1}^N x^t r^t
+\end{equation}
+
+subtract (7) and (8)
+
+% equation 9
+\begin{equation}
+N w_1 \sum\limits_{t = 1}^N (x^t)^2 - w_1 (\sum\limits_{t = 1}^N x^t)^2 = N \sum\limits_{t = 1}^N x^t r^t - \sum\limits_{t = 1}^N x^t \sum\limits_{t = 1}^N r^t
+\end{equation}
+
+Factor out $w_1$ from the L.H.S of (9) and divide and we have:
+
+% equation 10
+\begin{equation}
+w_1 = \frac{N \sum\limits_{t = 1}^N x^t r^t - \sum\limits_{t = 1}^N x^t \sum\limits_{t = 1}^N r^t}{N \sum\limits_{t = 1}^N (x^t)^2 - (\sum\limits_{t = 1}^N x^t)^2}
+\end{equation}
+
+
+And rearranging (6) to solve for $w_0$:
+
+\begin{equation}
+w_0 = \bar{r^t} - w_1 \bar{x^t}
+\end{equation}
+
+The solutions above for $w_0$ and $w_1$ are the optimal values.
+
+\subsection{(ii)}
+
+This time we let $SSE = \frac{1}{N} \sum\limits_{t = 1}^N (r^t - (v_2 (x^t)^2 + v_1x^t + v_0))^2$ and we want to minimize the SSE by setting the derivative with respect to $v_0$ and $v_1$ and $v_2$ to zero:
+
+% equation 12
+\begin{equation}
+\frac {\partial SSE}{\partial v_0} = \frac{1}{N} \sum\limits_{t = 1}^N 2(r^t - v_2 (x^t)^2 - v_1 x^t - v_0)(-1) = 0
+\end{equation}
+
+% equation 13
+\begin{equation}
+\frac {\partial SSE}{\partial v_1} = \frac{1}{N} \sum\limits_{t = 1}^N 2(r^t - v_2 (x^t)^2 - v_1 x^t - v_0)(-x) = 0
+\end{equation}
+
+% equation 14
+\begin{equation}
+\frac {\partial SSE}{\partial v_1} = \frac{1}{N} \sum\limits_{t = 1}^N 2(r^t - v_2 (x^t)^2 - v_1 x^t - v_0)(-x^2) = 0
+\end{equation}
+
+We apply the same techniques as for the previous problem, pull the 2 out, multiple by $\frac{N}{2}$ and distribute the summations:
+
+\begin{equation}
+N v_0 + v_1 \mysum x^t + v_2 \mysum (x^t)^2 = \mysum r^t
+\end{equation}
+
+\begin{equation}
+v_0 \mysum x^t + v_1 \mysum (x^t)^2 + v_2 \mysum (x^t)^3 = \mysum x^t r^t
+\end{equation}
+
+\begin{equation}
+v_0 \mysum (x^t)^2 + v_1 \mysum (x^t)^3 + v_2 \mysum (x^t)^4 = \mysum (x^t)^2 r^t
+\end{equation}
+
+% equation 18 matrix
+
+We get a linear system of three equations and three unknowns.  We build a matrix from the linear system:
+
+\[ \begin
+{bmatrix}
+  N & \mysum x^t & \mysum (x^t)^2 \\
+  \mysum x^t & \mysum (x^t)^2 & \mysum (x^t)^3 \\
+  \mysum (x^t)^2 & \mysum (x^t)^3 &  \mysum (x^t)^4
+ \end{bmatrix}
+ \begin{bmatrix}
+ 	v_0 \\
+	v_1 \\
+	v_2
+ \end{bmatrix}
+ =
+ \begin{bmatrix}
+ 	\mysum r^t \\
+	\mysum x^t r^t \\
+	\mysum (x^t)^2 r^t
+ \end{bmatrix}
+\]
+
+At this point, directly solving for $v_0, v_1, v_2$ is best left to a computer.  Given the data, the sums can be calculated, fed into the matrix and the parameters calculated by solving the system for $\dot{\vec{v}}$
+
+\subsection{(iii)}
+
+Q: Professor Gopher claims that $E(v_{2}^*, v_{1}^*, v_{0}^* | Z_{train}) \leq E(w_{1}^*, w_{0}^* | Z_{train})$ is true for any $Z_{train}$, is Professor Gopher's claim correct?
+
+\noindent A: Yes, Professor Gopher's claim is correct.  For any given $Z_{train}$, adding more polynomial terms will give a better fit for the data and, hence, a lower error for the model.  The difference in error will be exactly equal if the true model for $Z_{train}$ is linear and less if the true model for $Z_{train}$ is non-linear.
+
+\subsection{(iv)}
+
+Q: Professor Gopher claims that $E(v_{2}^*, v_{1}^*, v_{0}^* | Z_{test}) \leq E(w_{1}^*, w_{0}^* | Z_{test})$ is true for any $Z_{train}$, is Professor Gopher's claim correct?
+
+\noindent A: Strictly speaking, Professor Gopher's claim is not true.  The model is fit on $Z_{train}$ and it is possible that the true models could differ between $Z_{train}$ and $Z_{test}$.  For instance, if $Z_{train}$'s data had a non-linear relationship and $Z_{test}$'s model had a linear relationship, the quadratic model could be overfit on $Z_{train}$ and not generalize well to $Z_{test}$.  Generally speaking this should only happen when there isn't a lot of data or there is some disproportionate representative values in one set and not the other.  These issues can be rectified by gathering more data and ensuring the data is randomly split between $Z_{train}$ and $Z_{test}$.  Ensuring more data and randomly splitting data sets makes Professor Gopher's claims more believable.
+
+\section{Problem 2}
+\subsection{(i)}
+
+tr($A$): 701
+
+\noindent tr($A^T$): 701
+
+\noindent tr($A^TA$): 484533
+
+\noindent tr($AA^T$): 484533
+
+\subsection{(ii)}
+
+The absolute value of $|A|$ represents the "volume" of the 5 dimensional "parallelogram" formed by the rows of A.
+
+\subsection{(iii)}
+
+Because the columns of A are clearly not linearly dependent, $det A \neq 0$.  The columns are not linearly dependent because there is no way to form a linear combination of one column from the other columns.  I know this because observing the relationship between the columns I note that any column can be created based on element-wise multiplication of two other columns.  For instance, column 4 can be created by multiplying the elements of columns 2 and 3.  Because of this, there is no way to multiply a column by a scalar to create any other column.  Note that the exception to "every column is an element-wise multiplication of two other columns" is column one, but no other column is a linear combination of that and vice-versa.
+
+\subsection{(iv)}
+
+As stated in the previous problem, because the columns of A are clearly not linearly dependent, $A$ is full rank, with rank 5.
+
+\section{Problem 3}
+
+% my_cross_val()
+
+\subsection{(i) my\_cross\_val()}
+
+\noindent method: LinearSVC
+
+\noindent dataset: Boston50
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.1765 & 0.3333 & 0.1765 & 0.3137 & 0.4314 & 0.1961 & 0.2200 & 0.2800 & 0.1400 & 0.1600 & 0.2427 & 0.0889\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LinearSVC
+
+\noindent dataset: Boston75
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.2157 & 0.1373 & 0.1176 & 0.2549 & 0.1765 & 0.6863 & 0.0600 & 0.1600 & 0.1200 & 0.1000 & 0.2028 & 0.1699\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LinearSVC
+
+\noindent dataset: Digits
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0611 & 0.0667 & 0.0444 & 0.0778 & 0.0222 & 0.0444 & 0.0556 & 0.0670 & 0.0559 & 0.0559 & 0.0551 & 0.0146\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: SVC
+
+\noindent dataset: Boston50
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.2353 & 0.4118 & 0.3725 & 0.2745 & 0.3333 & 0.2549 & 0.3400 & 0.3400 & 0.2400 & 0.4400 & 0.3242 & 0.0680\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: SVC
+
+\noindent dataset: Boston75
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.2157 & 0.1373 & 0.3137 & 0.3333 & 0.2549 & 0.1961 & 0.2200 & 0.2200 & 0.3000 & 0.2600 & 0.2451 & 0.0566\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: SVC
+
+\noindent dataset: Digits
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.4611 & 0.6222 & 0.3833 & 0.4222 & 0.4944 & 0.4278 & 0.5389 & 0.4637 & 0.5196 & 0.5140 & 0.4847 & 0.0651\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: Boston50
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0784 & 0.0784 & 0.0784 & 0.1176 & 0.1373 & 0.1961 & 0.1400 & 0.2000 & 0.1400 & 0.1200 & 0.1286 & 0.0421\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: Boston75
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0588 & 0.0588 & 0.0588 & 0.1569 & 0.0980 & 0.0980 & 0.1200 & 0.1000 & 0.0800 & 0.1200 & 0.0949 & 0.0304\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: Digits
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0278 & 0.0444 & 0.0222 & 0.0333 & 0.0389 & 0.0333 & 0.0556 & 0.0503 & 0.0279 & 0.0447 & 0.0378 & 0.0102\\
+	\hline
+	\end{tabular}
+\end{center}
+
+% my_train_test()
+
+\subsection{(ii) my\_train\_test()}
+
+\noindent method: LinearSVC
+
+\noindent dataset: Boston50
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.2540 & 0.1349 & 0.2460 & 0.1429 & 0.2540 & 0.1508 & 0.2937 & 0.2222 & 0.1032 & 0.3492 & 0.2151 & 0.0752\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LinearSVC
+
+\noindent dataset: Boston75
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0556 & 0.0714 & 0.5794 & 0.1825 & 0.1984 & 0.2222 & 0.5079 & 0.1349 & 0.3571 & 0.5079 & 0.2817 & 0.1827\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LinearSVC
+
+\noindent dataset: Digits
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0334 & 0.0468 & 0.0445 & 0.0713 & 0.0334 & 0.0601 & 0.0624 & 0.0490 & 0.0646 & 0.0423 & 0.0508 & 0.0125\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: SVC
+
+\noindent dataset: Boston50
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.3492 & 0.2698 & 0.3651 & 0.4286 & 0.3730 & 0.3730 & 0.4524 & 0.3889 & 0.3413 & 0.3175 & 0.3659 & 0.0495\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: SVC
+
+\noindent dataset: Boston75
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.2222 & 0.2381 & 0.2778 & 0.2302 & 0.2222 & 0.2381 & 0.2302 & 0.2778 & 0.2619 & 0.1667 & 0.2365 & 0.0307\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: SVC
+
+\noindent dataset: Digits
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.7082 & 0.4365 & 0.6125 & 0.5301 & 0.6481 & 0.6882 & 0.5991 & 0.5657 & 0.7082 & 0.4811 & 0.5978 & 0.0898\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: Boston50
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.1667 & 0.1667 & 0.1746 & 0.1746 & 0.1032 & 0.1984 & 0.1667 & 0.1349 & 0.1429 & 0.1508 & 0.1579 & 0.0250\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: Boston75
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.1270 & 0.1111 & 0.0873 & 0.0714 & 0.1032 & 0.1746 & 0.1032 & 0.0873 & 0.1032 & 0.1270 & 0.1095 & 0.0272\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: Digits
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0423 & 0.0356 & 0.0535 & 0.0401 & 0.0512 & 0.0223 & 0.0267 & 0.0423 & 0.0223 & 0.0535 & 0.0390 & 0.0115\\
+	\hline
+	\end{tabular}
+\end{center}
+
+%%%%%% Problem 4
+
+\section{Problem 4}
+
+\noindent method: LinearSVC
+
+\noindent dataset: X1
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0611 & 0.0778 & 0.0778 & 0.0889 & 0.1056 & 0.0722 & 0.1056 & 0.1006 & 0.1173 & 0.0615 & 0.0868 & 0.0187\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LinearSVC
+
+\noindent dataset: X2
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0056 & 0.0222 & 0.0111 & 0.0167 & 0.0167 & 0.0111 & 0.0056 & 0.0112 & 0.0000 & 0.0056 & 0.0106 & 0.0063\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LinearSVC
+
+\noindent dataset: X3
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0111 & 0.0667 & 0.0444 & 0.0389 & 0.0500 & 0.0444 & 0.0722 & 0.0168 & 0.0503 & 0.0838 & 0.0479 & 0.0216\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: SVC
+
+\noindent dataset: X1
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.9500 & 0.9389 & 0.9222 & 0.9278 & 0.9222 & 0.9111 & 0.9167 & 0.9218 & 0.9106 & 0.9162 & 0.9237 & 0.0118\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: SVC
+
+\noindent dataset: X2
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.9222 & 0.9278 & 0.9167 & 0.9333 & 0.9500 & 0.9556 & 0.9278 & 0.9330 & 0.9274 & 0.9385 & 0.9332 & 0.0114\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: SVC
+
+\noindent dataset: X3
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.9611 & 0.9111 & 0.9167 & 0.9222 & 0.9222 & 0.9222 & 0.9278 & 0.9330 & 0.9218 & 0.9274 & 0.9265 & 0.0129\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: X1
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0500 & 0.0389 & 0.0556 & 0.0556 & 0.0556 & 0.0444 & 0.0444 & 0.0503 & 0.0726 & 0.0279 & 0.0495 & 0.0113\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: X2
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0111 & 0.0056 & 0.0056 & 0.0167 & 0.0056 & 0.0278 & 0.0222 & 0.0000 & 0.0056 & 0.0000 & 0.0100 & 0.0089\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: X3
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & Fold 6 & Fold 7 & Fold 8 & Fold 9 & Fold 10 & mean & std dev\\ \hline
+	0.0778 & 0.0333 & 0.0500 & 0.0444 & 0.0667 & 0.0500 & 0.0389 & 0.1061 & 0.0559 & 0.0559 & 0.0579 & 0.0202\\
+	\hline
+	\end{tabular}
+\end{center}
+
+\end{document}

@@ -1,0 +1,437 @@
+\documentclass{article}
+
+\usepackage[margin=0.5in]{geometry}
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\author{Craig Ching\\
+      \texttt{\#1452647} \\
+      \texttt{chin0007@umn.edu}}
+\title{
+CSCI 5521 Spring 2017 Homework \#3}
+\begin{document}
+
+\maketitle
+
+\newcommand{\mysum} {\sum\limits_{i = 1}^n}
+\newcommand{\myz} {\mathbf{w}^T x_i}
+
+%\setlength{\parindent}{0pt}
+
+\section{Problem 1}
+
+%1a
+\subsection{(a) Clearly show and explain the steps of the projected gradient descent algorithm for optimizing the regularized logistic regression objective function. The steps should include an exact expression for the gradient.}
+
+Our hypothesis function is:
+
+\begin{equation}
+h(\myz) = \frac{ \exp ( \myz ) }{ 1 + \exp( \myz ) }
+\end{equation}
+
+Which gives us a regularized objective function of:
+
+\begin{equation}
+f(\mathbf{w}) = \frac1n \mysum \{-y_i \mathbf{w}^Tx_i + \log(1 + \exp(\mathbf{w}^Tx_i))\} + \frac\lambda2||\mathbf{w}||^2
+\end{equation}
+
+% Derivative of log ( 1 + exp( w^Tx) )
+To derive the gradient of the $f(\mathbf{w})$, we will need the following:
+
+\begin{equation}
+\frac{\partial}{\partial \mathbf{w} }\log( 1 + \exp( \mathbf{w}^Tx_i ) )=\frac{ \exp(\mathbf{w}^Tx_i) x_i }{1 + \exp( \mathbf{w}^Tx_i )}
+\end{equation}
+
+Using the chain rule:
+
+\begin{equation}
+\frac{\partial}{\partial \mathbf{w} }\log (1 + \exp( \mathbf{w}^Tx_i )) = \frac{1}{1 + \exp( \mathbf{w}^Tx_i )}\frac{\partial}{\partial\mathbf{w}}(1+\exp( \mathbf{w}^Tx_i )),
+\end{equation}
+
+\begin{equation}
+\frac{\partial}{\partial\mathbf{w}}( \exp( \mathbf{w}^Tx_i ) = \exp( \mathbf{w}^Tx_i)\frac{\partial}{\partial\mathbf{w}}(\mathbf{w}^Tx_i) = \exp( \mathbf{w}^Tx_i ) x_i
+\end{equation}
+
+Therefore:
+
+\begin{equation}
+\frac{\partial}{\partial\mathbf{w}}\log (1 + \exp( \mathbf{w}^Tx_i)) = \frac{\exp( \mathbf{w}^Tx_i)x_i}{1 + \exp( \mathbf{w}^Tx_i)}.
+\end{equation}
+
+% End
+
+With that in hand, we can start:
+
+\begin{equation}
+\frac{\partial f(\mathbf{w})}{\partial\mathbf{w}} = -(y_i x_i) + \frac{ x_i \exp ( \myz ) }{ 1 + \exp( \myz ) } + \lambda \mathbf{w}
+\end{equation}
+
+We can simplify that to:
+
+\begin{equation}
+\frac{\partial f(\mathbf{w})}{\partial\mathbf{w}} = x_i ( \frac{ \exp ( \myz ) }{ 1 + \exp( \myz ) } - y_i) + \lambda \mathbf{w}
+\end{equation}
+
+Which we can write as:
+
+\begin{equation}
+\nabla_f = x_i ( h(\myz) - y_i) + \lambda \mathbf{w}
+\end{equation}
+
+Our update rule for projected gradient descent is then
+
+\begin{equation}
+\begin{aligned}
+\mathbf{w}_t = 0 \\
+\text{Repeat} \\
+\mathbf{w}_{t + 1}^{'} &= \mathbf{w}_t - \eta [x_i ( h(\myz) - y_i) + \lambda \mathbf{w}] \\
+\mathbf{w}_{t + 1} &= \Pi_{X}(\mathbf{w}_{t + 1}^{'}) \\
+\text{Until convergence}
+\end{aligned}
+\end{equation}
+
+where $\Pi_{X}(\mathbf{x}) = arg \min\limits_{y \in X} || x - y ||$
+
+The expression $\Pi_{X}(\mathbf{w}_{t + 1}^{'})$ has the effect of projecting the update $\mathbf{w}_{t + 1}^{'}$ back to the point in the constrained region that is nearest to it if it should end up outside the constrained region.
+
+The notation $\Pi_{X}(\mathbf{w}_{t + 1}^{'})$ is from Bubeck.  An alternative way to express it is given in the slides for lecture 10:
+
+\[
+\mathbf{w}_{t + 1} =
+\begin{cases}
+\mathbf{w}_{t + 1}^{'},                                                         & \text{if} ||\mathbf{w}_{t + 1}^{'} || \leq R \\
+\frac{R}{ || \mathbf{w}_{t + 1}^{'} ||} \mathbf{w}_{t + 1}^{'}, & \text{if} || \mathbf{w}_{t + 1}^{'} || > R
+\end{cases}
+\]
+
+Where R is a radius for a ball that constrains updates to the constrained region.
+
+% 1b
+\subsection{(b) Is the objective function strongly convex? Clearly explain your answer using the definition of strong convexity.}
+
+The objective function is strongly convex.  My proof relies on the fact that if we can rewrite the function in a form such that the new form is strongly convex, we will conclude that the function is strongly convex.  My proof also relies on the fact that properties of convexity (e.g. convexity, strong convexity, and smoothness) are additive properties.
+
+Define:
+
+\begin{equation}
+\begin{aligned}
+g_1(\mathbf{w}) &= -y_i \mathbf{w}^T x_i \\
+g_2(\mathbf{w}) &= \log(1 + \exp(\mathbf{w}^Tx_i) \\
+g_3(\mathbf{w}) &= \frac\lambda2 || \mathbf{w} ||^2 \\
+f(\mathbf{w}) &= \frac1n \sum\limits_{i=1}^n g_1(\mathbf{w}) + g_2(\mathbf{w}) + g_3(\mathbf{w})
+\end{aligned}
+\end{equation}
+
+Then prove that $g_1$ and $g_2$ are convex and $g_3$ is strongly convex, then, by the additive properties of convexity, we show that our original function is strongly convex.
+
+Proof that $g_1$ is convex:
+
+\begin{equation}
+\begin{aligned}
+-y_i\mathbf{w}_1^Tx_i &\geq -y_i \mathbf{w}_2^T x_i + (\mathbf{w}_1 - \mathbf{w}_2) (-y_i x_i) \\
+(\frac{ 1 }{ y_i x_i }) ( -y_i\mathbf{w}_1^Tx_i ) &\geq (\frac{ 1 }{ y_i x_i }) (-y_i \mathbf{w}_2^T x_i + (\mathbf{w}_1 - \mathbf{w}_2) (-y_i x_i) ) \\
+- \mathbf{w}_1 &\geq - \mathbf{w}_2 - \mathbf{w}_1 + \mathbf{w}_2 \\
+- \mathbf{w}_1 &\geq - \mathbf{w}_1
+\end{aligned}
+\end{equation}
+
+To prove that $g_2$ is convex, we first make a simplification and assume that the $\exp( \mathbf{w}^T x_i)$ term dominates in the $\log$, and we start by rewriting $g_2$ as:
+
+\begin{equation}
+\begin{aligned}
+g_2(x) &= \log( \exp( \mathbf{w}^T x_i ) ) \\
+           &= \mathbf{w}^Tx_i
+\end{aligned}
+\end{equation}
+
+Then we can prove convexity:
+
+\begin{equation}
+\begin{aligned}
+\mathbf{w}_1^Tx_i &\geq \mathbf{w}_2^Tx_i + (\mathbf{w}_1 - \mathbf{w}_2) x_i \\
+( \frac1x_i )( \mathbf{w}_1^Tx_i ) &\geq ( \frac1x_i ) (\mathbf{w}_2^Tx_i + (\mathbf{w}_1 - \mathbf{w}_2) x_i ) \\
+\mathbf{w}_1 &\geq \mathbf{w}_2 + \mathbf{w}_1 - \mathbf{w}_2 \\
+\mathbf{w}_1 &\geq \mathbf{w}_1
+\end{aligned}
+\end{equation}
+
+Proof that $g_3$ is strongly convex:
+
+\begin{equation}
+\begin{aligned}
+\mathbf{w}_1^2 &\geq \mathbf{w}_2^2 + (\mathbf{w}_1 - \mathbf{w}_2) 2\mathbf{w}_2 + \frac\alpha2 ( \mathbf{w}_1 - \mathbf{w}_2 )^2 \\
+\mathbf{w}_1^2 &\geq \mathbf{w}_2^2 + ( \mathbf{w}_1 - \mathbf{w}_2) 2\mathbf{w}_2 + \frac\alpha2 ( \mathbf{w}_1 - \mathbf{w}_2 )^2
+\end{aligned}
+\end{equation}
+
+At this point, we're going to assume that $\alpha$ = 2:
+
+\begin{equation}
+\begin{aligned}
+\mathbf{w}_1^2 &\geq \mathbf{w}_2^2 + (\mathbf{w}_1 - \mathbf{w}_2) 2\mathbf{w}_2 + ( \mathbf{w}_1 - \mathbf{w}_2 )^2 \\
+\mathbf{w}_1^2 &\geq \mathbf{w}_2^2 + 2\mathbf{w}_1\mathbf{w}_2 - 2\mathbf{w}_2^2 + \mathbf{w}_1^2 - 2\mathbf{w}_1\mathbf{w}_2 + \mathbf{w}_2^2 \\
+\mathbf{w}_1^2 &\geq \mathbf{w}_1^2, \enspace \text{if} \enspace \alpha \leq 2
+\end{aligned}
+\end{equation}
+
+So, if $\alpha \leq 2$ then $g_3$ is strongly convex.  Therefore:
+
+\begin{equation}
+\begin{aligned}
+g_1(x) &\geq -y_i \mathbf{w}^T x_i + (x - y)(-y_i x_i) \\
+g_2(x) &\geq \log(1 + \exp(\mathbf{w}^Tx_i) + (x - y)\frac{ x_i \exp(\mathbf{w}^Tx ) }{ 1 + \exp( \mathbf{w}^Tx_i ) } \\
+g_1(x) + g_2(x) & \geq  -y_i \mathbf{w}^T x_i + \log(1 + \exp(\mathbf{w}^Tx_i) + [ (x - y)(-y_i x_i) + (x - y)\frac{ x_i \exp(\mathbf{w}^Tx ) }{ 1 + \exp( \mathbf{w}^Tx_i ) } ] \\
+g_1(x) + g_2(x) & \geq  -y_i \mathbf{w}^T x_i + \log(1 + \exp(\mathbf{w}^Tx_i) + (x - y) [ (-y_i x_i) + \frac{ x_i \exp(\mathbf{w}^Tx ) }{ 1 + \exp( \mathbf{w}^Tx_i ) } ] \\
+f(y) &= -y_i \mathbf{w}^T x_i + \log(1 + \exp(\mathbf{w}^Tx_i) \\
+\nabla f(y) &= (-y_i x_i) + \frac{ x_i \exp(\mathbf{w}^Tx ) }{ 1 + \exp( \mathbf{w}^Tx_i ) } \\
+f(x) &\geq f(y) + (x - y) \nabla f(y) + \frac\lambda2 || \mathbf{w} ||^2, \enspace \text{if} \enspace \lambda = \alpha \leq 2
+\end{aligned}
+\end{equation}
+
+Therefore since our function can be written in the form for a strongly convex function and we've proved convexity and strong-convexity of the components, we conclude that the objective function is strongly convex.
+
+%1c
+\subsection{(c) Is the objective function smooth? Clearly explain your answer using the definition of smoothness.}
+
+The objective function is smooth.  As in 1b, we will examine additive components, but this time, all components must be smooth in order for our objective to be smooth.
+
+Define:
+
+\begin{equation}
+\begin{aligned}
+g_1(\mathbf{w}) &= -y_i \mathbf{w}^T x_i \\
+g_2(\mathbf{w}) &= \log(1 + \exp(\mathbf{w}^Tx_i) \\
+g_3(\mathbf{w}) &= \frac\lambda2 || \mathbf{w} ||^2 \\
+f(\mathbf{w}) &= \frac1n \sum\limits_{i=1}^n g_1(\mathbf{w}) + g_2(\mathbf{w}) + g_3(\mathbf{w})
+\end{aligned}
+\end{equation}
+
+Prove that $g_1$, $g_2$ and $g_3$ are smooth, then, by the additive properties of smoothness, we show that our original function is also smooth.  For all three functions we're going to rely on the fact that a function is smooth if the derivative is continuous for our domain.
+
+\begin{equation}
+\begin{aligned}
+\nabla g_1 = -y_i x_i
+\end{aligned}
+\end{equation}
+
+$\nabla g$ is simply a constant function and is continuous for all $\mathbf{w}$, therefore $g_1$ is smooth.
+
+To prove that $g_2$ is smooth, we start with the derivative:
+
+\begin{equation}
+\begin{aligned}
+\nabla g_2 = \frac{ \exp(\mathbf{w}^Tx_i) x_i }{1 + \exp( \mathbf{w}^Tx_i )}
+\end{aligned}
+\end{equation}
+
+This function is continuous for all $\mathbf{w}^Tx$,  $\lim_{{\mathbf{w}^Tx}\to -\infty} \nabla g_2 = 0$ and $\lim_{{\mathbf{w}^Tx}\to\infty} \nabla g_2 = 1$ , therefore $g_2$ is smooth.
+
+To prove $g_3$ is smooth, we start with the derivative:
+
+\begin{equation}
+\begin{aligned}
+\nabla g_3 = \lambda || \mathbf{w} ||
+\end{aligned}
+\end{equation}
+
+$\nabla g_3$ is defined for all $\mathbf{w}$ and is, therefore, smooth.
+
+Since $g_1$, $g_2$, and $g_3$ are all smooth, we conclude that the objective function is also smooth.
+
+%1d
+\subsection{(d) Let $\mathbf{w}_T$ be the iterate after T steps of the projected gradient descent algorithm. What is a bound on the difference $f(\mathbf{w}_T) - f( \mathbf{w}^*)$? Clearly explain all quantities in the bound.}
+
+\begin{equation}
+f(\mathbf{x}_T) - f(\mathbf{x}^*) \leq \frac\beta2 \exp (- \frac{ 4T }{ \frac\beta\alpha + 1 }) ||\mathbf{x}_0 - \mathbf{x}^*||^2
+\end{equation}
+
+Since our function is strongly convex and smooth, we have the rate of convergence given by the above equation.  The rate at which $\mathbf{x}_T$, our estimate after T iterations, approaches our optimum, $\mathbf{x}^*$ with a fixed step size, is exponential, given roughly by $\exp(-CT)$.
+
+\section{Problem 2}
+
+%2a
+\subsection{(a) In your own words, describe the EM algorithm for mixture of Gaussians, highlighting the two key steps (E- and M-), illustrating the methods used in the steps on a high level, and what information they need.}
+
+Expectation-Maximization (EM) is an unsupervised technique where the training data is given as $X = \{\mathbf{x}^t\}_t$, the significance being that we don't have the labels $\mathbf{r}^t$.  The goal of EM is, then, to estimate the labels representing the components (which are analagous to classes in the supervised setting).
+
+EM consists of two steps, the E-step and the M-step.  We describe the EM algorithm for the multivariate Gaussian mixture model.
+
+During the E-step, the goal is to estimate the latent labels $\mathbf{z}_i^t$ given current estimates of the component prior, mean, and covariance.  During the M-step we update the component prior, mean, and covariance given the labels estimated in the E-step.  We define $\mathbf{z}^t$ to be a vector of indicator variables where $z_i^t$ = 1 if $\mathbf{x}^t$ belongs to the cluster $G_i$ and 0 otherwise.
+
+Before we can begin EM, though, we need some initial estimates for the component parameters.  We do this by running the k-means clustering algorithm to give us initial estimates of the component mean, $\mathbf{m}_i$, covariance, $\mathbf{S}_i$ and the prior $\sum_tb_i^t/N$.  Note that here $b_i^t$ are the labels given by the k-means algorithm.  Once we have our initial component parameters and our labels, we begin with the E-step.
+
+In the E-step, the goal is to estimate the labels from the estimated component parameters $\Phi$.  We define:
+
+\begin{equation}
+\mathcal{Q} ( \Phi | \Phi^l ) = \sum\limits_t \sum\limits_i E [ z_i^t | X, \Phi^l ] [ \log \pi_i + \log p_i ( \mathbf{x}^t | \Phi^l]
+\end{equation}
+
+where:
+
+\begin{equation}
+E [ z_i^t | X, \Phi^l ] = P ( G_i | \mathbf{x}^t, \Phi^l) \equiv h_i^t
+\end{equation}
+
+This basically says that the expected value of the hidden variable $z_i^t$ is the posterior probability ($h_i^t$) that $\mathbf{x}^t$ is generated by component $G_i$  Note that since $h_i^t$ is a probability, its value is between 0 and 1 and is a soft label, compared to the hard labels of k-means.  In the above equations, because we are describing EM for Gaussian Mixtures, $\Phi$ represents the estimated component prior, mean, and covariance as mentioned above.
+
+In the M-step, we maximize $\mathcal{Q}$ to get the next set of parameters $\Phi^l$, the component prior, mean, and covariance:
+
+\begin{equation}
+\Phi^l = arg \max\limits_\Phi \mathcal{Q} ( \Phi | \Phi^l)
+\end{equation}
+
+Doing so estimates the component prior:
+
+\begin{equation}
+\pi_i = \frac{ \sum_t h_i^t }{ N }
+\end{equation}
+
+Descriptions of the Gaussian component parameters estimated by the M-step are given below.  Once the new parameters $\Phi^l$ are estimated, then we begin again with the E-step.  Note that EM takes an infinite number of iterations to converge, so we stop when the parameters don't change much or when we've reached some maximum number of iterations.  Also note that if we knew which component $\mathbf{x}_t$ came from, we wouldn't need the E-step and we could run one M-step to get our classification.
+
+% 2b
+\subsection{(b) Assuming the posterior probabilities $h_i^t$ are known, show the estimates of the component prior, mean, and covariance $\pi_i, \mu_i, \Sigma_i, i = 1, \dots, N$ given by the M-step (you do not need to show how they are derived)}
+
+The component prior is generally given by the following equation, dependent on the posterior probability $h_i^t$ estimated from the E-step:
+
+\begin{equation}
+\pi_i = \frac{\sum_t h_i^t}{N}
+\end{equation}
+
+Since $h_i^t$ is a probability between 0 and 1, $\pi_i$ is estimated by the proportion of data points for the component $G_i$
+
+The component mean is given by:
+
+\begin{equation}
+\mathbf{m}_i^{l+1} = \frac{\sum_t h_i^t \mathbf{x}^t}{\sum_t h_i^t}
+\end{equation}
+
+Again, we use the posterior probability $h_i^t$ to estimate the component mean to be used in the next iteration of the E-step.
+
+The component covariance is given by:
+
+\begin{equation}
+\mathbf{S}_i^{l+1} = \frac{\sum_t h_i^t (\mathbf{x}^t - \mathbf{m}_i^{l+1}) (\mathbf{x}^t - \mathbf{m}_i^{l+1})^T }{\sum_t h_i^t}
+\end{equation}
+
+Again, the use of $h_i^t$ is obvious in the estimation of $\mathbf{S}_i^{l + 1}$.  Note the similarities of these estimations to their classification counterparts in the multivariate Gaussian distribution:
+
+\begin{equation}
+\begin{aligned}
+\hat{P} ( C_i ) &= \frac{ \sum_t r_i^t }{ N } \\
+\mathbf{m}_i &= \frac{ \sum_t r_i^t \mathbf{x}^t }{ \sum_t r_i^t } \\
+\mathbf{S}_i &= \frac{ \sum_t r_i^t ( \mathbf{x}^t - \mathbf{m}_i) ( \mathbf{x}^t - \mathbf{m}_i)^T }{ \sum_t r_i^t }
+\end{aligned}
+\end{equation}
+
+The difference being that in classification, we have the labels $r_i^t$ but in EM we have posterior probability estimates of the labels $h_i^t$.
+
+% 2c
+\subsection{(c) Assuming the component prior, mean, and covariance $\pi_i, \mu_i, \Sigma_i, i = 1, \dots N$, are known, show how the posterior probabilities, $h_i^t$ are computed in the E-step}
+
+The component posterior probabilities $h_i^t$  are computed be the following:
+
+\begin{equation}
+h_i^t = \frac{ \pi_i|\mathbf{S}_i|^{-1/2} \exp [ - (1/2) (\mathbf{x}^t - \mathbf{m}_i^t)^T \mathbf{S}_i^{-1} (\mathbf{x}^t - \mathbf{m}_i^t) ] }{ \sum_j \pi_j |\mathbf{S}_j|^{-1/2} \exp[ -(1/2) (\mathbf{x}^t - \mathbf{m}_j)^T \mathbf{S}_j^{-1} (\mathbf{x}^t - \mathbf{m}_j) ] }
+\end{equation}
+
+The numerator consists of the multivairite Gaussian density equation for the component $G_i$ calculated using the estimates $\pi_i$, $\mathbf{m}_i$, and $\mathbf{S}_i$ and the denominator is the total density estimated by the Gaussian density for all components $G_j$ and acts as a normalizing term making $h_i^t$ a proper probability.
+
+% 3
+
+\section{Problem 3}
+
+\subsection{Description}
+
+For this problem I developed a 2-class Logistic Regression implementation.  To solve the logistic regression problem, I used batch gradient descent with a constant step size $\eta = 0.01$, 500 iterations, and a regularization parameter $\lambda = 1.0$.  There is no checking of the loss function for convergence, I simply execute for the number of iterations and use the result.  To find the right step-size and iterations, I played around with both (a lot!) until I found a combination that gave good results.  For the most part, the error rates of my implementation are competitive with those of the logistic regression implementation in scikit-learn.
+
+\subsection{Results}
+
+\hfill \break
+
+\noindent method: MyLogisticReg2
+
+\noindent dataset: Boston50
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.1275 & 0.1881 & 0.1881 & 0.0792 & 0.1386 & 0.1443 & 0.0410\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: MyLogisticReg2
+
+\noindent dataset: Boston75
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.0686 & 0.0891 & 0.0891 & 0.1287 & 0.0990 & 0.0949 & 0.0196\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: Boston50
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.1471 & 0.0891 & 0.1881 & 0.1485 & 0.0792 & 0.1304 & 0.0407\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: Boston75
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.1373 & 0.0693 & 0.0990 & 0.0891 & 0.1287 & 0.1047 & 0.0252\\
+	\hline
+	\end{tabular}
+\end{center}
+
+% 4
+
+\section{Problem 4}
+
+\subsection{Description}
+
+For this problem I developed a k-class Logistic Regression implementation, using the softmax function as the hypothesis.  To solve the logistic regression problem, I used batch gradient descent with a constant step size $\eta = 0.00001$, 1000 iterations, and a regularization parameter $\lambda = 1.0$.  There is no checking of the loss function for convergence, I simply execute for the number of iterations and use the result.  To find the right step-size and iterations, I played around with both (a lot!) until I found a combination that gave good results.  For the most part, the error rates of my implementation are competitive with those of the logistic regression implementation in scikit-learn.
+
+\subsection{Results}
+
+\hfill \break
+
+\noindent method: MyLogisticRegGen
+
+\noindent dataset: Digits
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.0361 & 0.0139 & 0.0362 & 0.0279 & 0.0362 & 0.0301 & 0.0087\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: Digits
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.0333 & 0.0389 & 0.0390 & 0.0390 & 0.0362 & 0.0373 & 0.0022\\
+	\hline
+	\end{tabular}
+\end{center}
+
+\end{document}

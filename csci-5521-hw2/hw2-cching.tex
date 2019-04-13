@@ -1,0 +1,428 @@
+\documentclass{article}
+
+\usepackage[margin=0.5in]{geometry}
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+\author{Craig Ching\\
+      \texttt{\#1452647} \\
+      \texttt{chin0007@umn.edu}}
+\title{
+CSCI 5521 Spring 2017 Homework \#2}
+\begin{document}
+
+\maketitle
+
+\section{Problem 1}
+
+%1a
+\subsection{(a) $p(x|\theta) = \frac{1}{\sqrt{2\pi}\theta} exp(-\frac{x^2}{2\theta^2}), \theta > 0$}
+
+First, specify the likelihood as the joint density for X as:
+
+\begin{equation}
+L = \prod\limits_{i = 1}^{n} \frac{1}{ \sqrt{2\pi} \theta } exp \Big( \frac{-x_i^2}{2 \theta^2} \Big)
+\end{equation}
+
+\noindent Then simplify by calculating the product separately for $\frac{1}{\sqrt{2\pi}}$, $\frac{1}{\theta}$ and the $exp$ term:
+
+\begin{equation}
+L = ( \frac{1}{ 2\pi} )^{\frac{n}{2}} \frac{1}{\theta^n}  exp \Bigg( - \frac{\sum\limits_{i = 1}^{n} x_i^2}{ 2\theta^2} \Bigg)
+\end{equation}
+
+\noindent Now take the log of the likelihood function:
+
+\begin{equation}
+log L = - log ( 2\pi ^{\frac{n}{2}} \theta^n ) - \frac{x_i^2}{2\theta^2}
+\end{equation}
+
+\noindent Apply log identities for multiplication and exponents
+
+\begin{equation}
+- \frac{n}{2} log 2\pi - n log \theta - \frac{\sum\limits_{i = 1}^n x_i^2}{2\theta^2}
+\end{equation}
+
+\noindent Take  the derivative of the log-likelihood function with respect to $\theta$ and set it equal to $0$
+
+\begin{equation}
+\frac{\partial}{\partial \theta} log L = - \frac{n}{\theta} + \frac{ \sum\limits_{i = 1}^{n} x_i^2}{\theta^3} = 0
+\end{equation}
+
+\noindent Simplify by multiplying through by $\theta$
+
+\begin{equation}
+\frac{\partial}{\partial \theta} log L = -n + \frac{ \sum\limits_{i = 1}^{n} x_i^2}{\theta^2} = 0
+\end{equation}
+
+\noindent Add $n$ to both sides:
+
+\begin{equation}
+\frac{\sum\limits_{i = 1}^{n} x_i^2}{\theta^2} = n
+\end{equation}
+
+\noindent Multiply both sides by $\theta^2$, divide both sides by $n$ and solve for $\theta$ by taking the square root of both sides:
+
+\begin{equation}
+\sqrt{ \frac{ \sum\limits_{i = 1}^n x_i^2 }{n} } = \theta
+\end{equation}
+
+% 1b
+\subsection{(b) $p(x|\theta) = \frac{1}{\theta} exp (- \frac{x}{\theta}), 0 \leq x  < \infty, \theta > 0$}
+
+\noindent First, specify the likelihood as the joint density for X as:
+
+\begin{equation}
+L = \prod\limits_{i = 1}^{n} \frac{1}{\theta} exp\Big(- \frac{x_i}{\theta} \Big)
+\end{equation}
+
+\noindent Carry out the product
+
+\begin{equation}
+L = \frac{1}{\theta^n} exp\Bigg(- \frac{\sum\limits_{i = 1}^n  x_i}{\theta} \Bigg)
+\end{equation}
+
+\noindent Take the log of the likelihood function and simplify using the identity for log of a quotient and log of an exponent
+
+\begin{equation}
+log L = - n log \theta - \frac{\sum\limits_{i = 1}^n  x_i}{\theta}
+\end{equation}
+
+\noindent Take the derivative of the log-likelihood function with respect to $\theta$ and set it equal to $0$
+
+\begin{equation}
+\frac{ \partial L}{ \partial \theta} =  - \frac{n}{\theta} + \frac{\sum\limits_{i = 1}^n x_i}{\theta^2} = 0
+\end{equation}
+
+\noindent Simplify by multiplying through by $\theta$, adding $n$ to both sides, multiplying through by $\theta$ again, then dividing by $n$
+
+\begin{equation}
+\theta = \frac{ \sum\limits_{i = 1}^n x_i}{n} = \bar{x}
+\end{equation}
+
+
+%1c
+\subsection{(c) $p(x|\theta) = \theta x^{\theta - 1},  0 \leq x \leq 1, 0 < \theta < \infty$}
+
+\noindent First, specify the likelihood as the joint density for X as:
+
+\begin{equation}
+L = \prod\limits_{i = 1}^n \theta x_i^{\theta - 1}
+\end{equation}
+
+\noindent Carry out the product for $\theta$
+
+\begin{equation}
+L = \theta^n \prod\limits_{i = 1}^n x_i^{\theta - 1}
+\end{equation}
+
+\noindent Take the log of the likelihood function
+
+\begin{equation}
+log L = log \theta^n \sum\limits_{i = 1}^n log x_i^{\theta - 1}
+\end{equation}
+
+\noindent Use the log identity for exponents to simplify
+
+\begin{equation}
+log L = n log \theta + (\theta - 1) \sum\limits_{i = 1}^n log x_i
+\end{equation}
+
+\noindent Take the derivative of the log-likelihood with respect to $\theta$ and set it equal to $0$
+
+\begin{equation}
+\frac{\partial L}{ \partial \theta } = \frac{n}{\theta} + \sum\limits_{i = 1}^n log x_i = 0
+\end{equation}
+
+\noindent Multiply through by $\theta$, subtract $n$ from both sides, then divide by the sum of $log x_i$
+
+\begin{equation}
+\theta = - \frac{n}{ \sum\limits_{i = 1}^n log x_i}
+\end{equation}
+
+%1d
+\subsection{(d) $p(x|\theta) = \frac{1}{\theta}, 0 \leq x \leq \theta, \theta > 0$}
+
+\noindent First, specify the likelihood as the joint density for X as:
+
+\begin{equation}
+L = \prod\limits_{i = 1}^n \frac{1}{\theta} = \frac{1}{\theta^n}
+\end{equation}
+
+\noindent Take the log of the likelihood and simplify using the exponent identity for $log$
+
+\begin{equation}
+log L = - n log \theta
+\end{equation}
+
+\noindent Take the derivative of the log-likelihood with respect to $\theta$
+
+\begin{equation}
+\frac{\partial L}{ \partial \theta } = \frac{-n}{\theta}
+\end{equation}
+
+\noindent This shows us that the log-likelihood (and, hence, the likelihood) is a decreasing function and the way to maximize it is to minimize $\theta$.  Though the maximum may not occur in this interval, we can still maximize the likelihood within the interval. Given the constraints $0 \leq x \leq \theta, \theta > 0$, we can minimize $\theta$ by setting it equal to the maximum of the $x_i$ values.
+
+\section{Problem 2}
+
+%2a
+\subsection{(a) Derive the maximum likelihood estimates for mean $\mu$ and covariance $\Sigma$ based on the sample set $X$}
+
+\noindent Specify the likelihood function as the joint density for $\mu$ and $\Sigma$
+
+\begin{equation}
+L = \prod\limits_{i = 1}^n \frac{1}{(2\pi)^{\frac{d}{2}} | \Sigma |^{\frac{1}{2}}} exp \bigg[ -\frac{1}{2} (x_i - \mu)^T \Sigma^{-1} (x_i - \mu)  \bigg]
+\end{equation}
+
+\noindent  Carry out the multiplication
+
+\begin{equation}
+L = \frac{1}{(2\pi)^{\frac{nd}{2}} | \Sigma |^{\frac{n}{2}}} exp \bigg[ -\frac{1}{2} \sum\limits_{i = 1}^n (x_i - \mu)^T \Sigma^{-1} (x_i - \mu)  \bigg]
+\end{equation}
+
+\noindent Take the log of the likelihood and use log identities to simplify to
+
+\begin{equation}
+log L = - \frac{nd}{2} log 2\pi - \frac{n}{2} log | \Sigma| - \frac{1}{2} \sum\limits_{i = 1}^n (x_i - \mu)^T \Sigma^{-1} (x_i - \mu)
+\end{equation}
+
+\noindent Take the partial derivative of the log-likelihood function with respect to $\mu$ and, using $\textbf{The Matrix Cookbook}$ equation number 86:
+
+\begin{equation}
+\frac{\partial}{\partial s} = (x - s)^T\textbf{W}(x - s) = -2\textbf{W}(x-s)
+\end{equation}
+
+\noindent we arrive at:
+
+\begin{equation}
+\frac{\partial L}{\partial \mu} = - \frac{1}{2} \sum\limits_{i = 1}^n [-2 \Sigma^{-1} (x_i - \mu)] = 0
+\end{equation}
+
+\noindent Then we simplify by using -2 to cancel the $-\frac{1}{2}$, pull $\Sigma^{-1}$ out of the sum and divide both sides by $\Sigma^{-1}$ we arrive at:
+
+\begin{equation}
+\sum\limits_{i = 1}^n (x_i - \mu) = 0
+\end{equation}
+
+\noindent We can simplify this by expanding the sum:
+
+\begin{equation}
+\sum\limits_{i=1}^n x_i - n\mu
+\end{equation}
+
+\noindent Add $n\mu$ to both sides and then divide by $n$ to solve for $\mu$, we get:
+
+\begin{equation}
+\mu = \frac{1}{n} \sum\limits_{i = 1}^n x_i = \bar{x}
+\end{equation}
+
+% Estimate Sigma
+
+\noindent To estimate $\Sigma$, we start with the log-likelihood function
+
+\begin{equation}
+log L = - \frac{nd}{2} log 2\pi - \frac{n}{2} log | \Sigma| - \frac{1}{2} \sum\limits_{i = 1}^n (x_i - \mu)^T \Sigma^{-1} (x_i - \mu)
+\end{equation}
+
+\noindent Recognizing that
+
+\begin{equation}
+|\Sigma| = \frac{1}{|\Sigma^{-1}|}
+\end{equation}
+
+\noindent and using the log of the quotient, rewrite the log-likelihoood
+
+\begin{equation}
+log L = - \frac{nd}{2} log 2\pi + \frac{n}{2} log |\Sigma^{-1} | - \frac{1}{2} \sum\limits_{i = 1}^n (x_i - \mu)^T \Sigma^{-1} (x_i - \mu)
+\end{equation}
+
+\noindent and take the derivative with respect to $\Sigma^{-1}$ and, using $\textbf{The Matrix Cookbook}$ equation number 57
+
+\begin{equation}
+\frac{\partial ln | det(\textbf{X}) |}{\partial \textbf{X}} = (\textbf{X}^{-1})^T = (\textbf{X}^T)^{-1}
+\end{equation}
+
+\noindent  and equation number 72
+
+\begin{equation}
+\frac{\partial a^T\textbf{X}a}{\partial \textbf{X}} = \frac{\partial a^T \textbf{X}^T a}{\partial \textbf{X}} = \textbf{aa}^T
+\end{equation}
+
+\noindent we arrive at:
+
+\begin{equation}
+\frac{\partial L}{\partial \Sigma^{-1}} = \frac{n}{2} \Sigma - \frac{1}{2} \sum\limits_{i = 1}^n [(x_i - \mu) (x_i - \mu)^T] = 0
+\end{equation}
+
+Now, add the sum to each side, multiply both sides by 2, and divide both sides by $n$ to get
+
+\begin{equation}
+\Sigma = \frac{1}{n} \sum\limits_{i = 1}^n [ (x_i - \mu)(x_i - \mu)^T]
+\end{equation}
+
+% 2b
+
+\subsection{(b) Let $\hat\mu_n$ be the estimate of the mean. Is $\hat\mu_n$ a biased estimate of the true mean $\mu$.  Clearly justify your answer by computing $E[\hat\mu_n]$}
+
+$\hat\mu$ is an $\textbf{unbiased}$ estimate of the true mean $\mu$.
+
+\begin{equation}
+  \begin{aligned}
+E[\hat\mu]  &= E\Bigg[ \frac{ \sum\limits_{i = 1}^n x_i}{n} \Bigg] \\
+&= \frac{1}{n} \sum\limits_{i = 1}^nE[x_i] \\
+&= \frac{n\mu}{n} \\
+&= \mu
+  \end{aligned}
+\end{equation}
+
+% 2c
+
+\subsection{(c) Let $\hat\Sigma_n$ be the estimate of the covariance. Is $\hat\Sigma_n$ a biased estimate of the true covariance $\Sigma$.  Clearly justify your answer by computing $E[\hat\Sigma_n]$}
+
+\noindent $\hat\Sigma$ is a \textbf{biased} estimate of the true covariance matrix $\Sigma$
+
+\begin{equation}
+  \begin{aligned}
+E[\hat\Sigma]  &= E\Bigg[ \frac{1}{n} \sum\limits_{i = 1}^n [ (x_i - \mu)(x_i - \mu)^T] \Bigg] \\
+&= \frac{1}{n} E\Bigg[ \sum\limits_{i = 1}^n [ (x_i - \mu)(x_i - \mu)^T] \Bigg] \\
+&= \frac{1}{n} \sum\limits_{i = 1}^n E [ (x_i - \mu)(x_i - \mu)^T]  \\
+&= \frac{1}{n} \sum\limits_{i = 1}^n E [ x_i x_i^T ] - nE[ \mu\mu^T]  \\
+&= \frac{n-1}{n} \Sigma \\
+&\neq \Sigma
+  \end{aligned}
+\end{equation}
+
+\noindent This can be corrected by instead writing the covariance as
+
+\begin{equation}
+E[\hat\Sigma] = \frac{1}{n - 1} \sum\limits_{i = 1}^n [ (x_i - \mu)(x_i - \mu)^T
+\end{equation}
+
+\noindent and becomes less significant the more data you have.
+
+% 3
+
+\section{Problem 3}
+
+\subsection{Description}
+
+\noindent My Multivariate Gaussian classifier uses quadratic discriminants as described in section 5.5 of the Alpaydin text book.  Specifically, the discriminant is
+
+\begin{equation}
+g_i(x) = \textbf{x}^T \textbf{W}_i \textbf{x} + \textbf{w}_i^T \textbf{x} + w_{i0}
+\end{equation}
+
+\noindent This is implemented as described with class-specific means $\textbf{m}_i$, class-specific covariance matrices $\textbf{S}_i$ and estimated priors $\hat{P}(C_i)$:
+
+\begin{equation}
+\begin{aligned}
+\textbf{W}_i &= - \frac{1}{2} \textbf{S}_i^{-1} \\
+\textbf{w}_i  &= \textbf{S}_i^{-1} \textbf{m}_i \\
+w_{i0}          &= - \frac{1}{2}\textbf{m}_i^T \textbf{S}_i^{-1} \textbf{m}_i - \frac{1}{2} log | \textbf{S}_i | + log \hat{P}(C_i)
+\end{aligned}
+\end{equation}
+
+\subsection{Results}
+
+\noindent \textbf{NOTE:} Gaussian noise $~ N(0, 0.001)$ was added to the Digits data set to avoid singular covariance matrices.
+
+\hfill \break
+
+\noindent method: MultiGaussClassify
+
+\noindent dataset: Boston50
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.2157 & 0.2475 & 0.2277 & 0.1584 & 0.1980 & 0.2095 & 0.0302\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: MultiGaussClassify
+
+\noindent dataset: Boston75
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.2451 & 0.1584 & 0.3168 & 0.2673 & 0.2178 & 0.2411 & 0.0526\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: MultiGaussClassify
+
+\noindent dataset: Digits
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.0667 & 0.0639 & 0.0279 & 0.0362 & 0.0418 & 0.0473 & 0.0154\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: Boston50
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.1275 & 0.1287 & 0.1683 & 0.1683 & 0.0891 & 0.1364 & 0.0297\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: Boston75
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.1176 & 0.0792 & 0.1386 & 0.0891 & 0.0693 & 0.0988 & 0.0256\\
+	\hline
+	\end{tabular}
+\end{center}
+\noindent method: LogisticRegression
+
+\noindent dataset: Digits
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.0417 & 0.0417 & 0.0501 & 0.0251 & 0.0501 & 0.0417 & 0.0092\\
+	\hline
+	\end{tabular}
+\end{center}
+
+\section{Appendix}
+
+Before correcting for the singular covariance matrix, I implemented a linear discriminant function as described in the book:
+
+\begin{equation}
+g_i(x) = \textbf{w}_i^T x + w_{i0}
+\end{equation}
+
+\noindent Even with a single, shared covariance matrix, I still had problems with singular covariance matrix.  So I played around with first using the identity matrix, then a diagonal matrix with the $\sigma^2$ on the diagonal.  I believe the latter gave me about a 9\% error rate.  Finally, once resolving the singular covariance matrix, I was able to implement the linear discriminant with a shared covariance matrix for the $\textbf{Digits}$ dataset.  Here are the results:
+
+\noindent method: MultiGaussClassify
+
+\noindent dataset: Digits
+
+\begin{center}
+	\begin{tabular}  { | l | l | l | l | l | l | l | }
+	\hline
+	Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 & mean & std dev\\ \hline
+	0.0750 & 0.0722 & 0.0724 & 0.0669 & 0.0529 & 0.0679 & 0.0079\\
+	\hline
+	\end{tabular}
+\end{center}
+
+\noindent I only include this here because I went through the trouble and wanted to record it.  Feel free to ignore if it's not interesting!  If you do want to reproduce it, you can change the line in q3.py that has \textbf{MultiGaussClassify(linear=False)} to \textbf{True} and you will get the linear discriminant.
+
+\end{document}
